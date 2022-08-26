@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content-wrapper">
+  <br><br><br>
+  <section class="content">
+    <div class="container-fluid">
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"> {{char.name}} Chart</h5>
+
+          <!-- Line Chart -->
+          <canvas id="lineChart" style="max-height: 400px;"></canvas>
+          <script>
+            let chartData = {
+              'date': [],
+              'value': [],
+            }
+            let url = `/js-chart/{{char.id}}`
+
+            fetch(url)
+              .then((resp => resp.json()))
+              .then(function (data) {
+                console.log('Data: ', data)
+                let list = data
+
+                for (let i in data) {
+                  let date = Object.keys(list[i])[0]
+                  let value = Object.values(list[i])[0]
+                  chartData.date.push(date)
+                  chartData.value.push(value)
+                }
+                console.log('chartData: ', typeof chartData.value[0])
+              })
+
+            document.addEventListener("DOMContentLoaded", () => {
+              new Chart(document.querySelector('#lineChart'), {
+                type: 'line',
+                data: {
+                  labels: chartData.date,
+                  datasets: [{
+                    label: 'Line Chart',
+                    data: chartData.value,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                  }]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                  }
+                }
+              });
+            });
+          </script>
+          <!-- End Line CHart -->
+
+        </div>
+      </div>
+      <!-- form element -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <form method="post">
+                {% csrf_token %}
+                <input type="number" name="int_value" id="id_int_value" class="form-control"
+                  placeholder="Enter Integer">
+                <input type="time" name="time_value" id="id_time_value" class="form-control" placeholder="Enter Time">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+              <div class="card-tools">
+                <div class="input-group input-group-sm" style="width: 150px;">
+                  <br>
+                  <div class="input-group-append">
+                    <button type="submit" class="btn btn-default">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0" style="height: 300px;">
+              <table class="table table-head-fixed text-nowrap">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>index</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in chart_item %}
+                  <tr>
+                    <td> {{item.id}} </td>
+                    {% if char.choices == 'Time Chart' %}
+                    <td>{{item.time_value}}</td>
+                    {% else %}
+                    <td>{{item.int_value}}</td>
+                    {% endif %}
+                    <td>{{item.date_create}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+      </div>
+      <!-- /.card --> {{char.choices}}
+    </div>
+  </section>
+</div>
+<script>
+  let choice = `{{char.choices}}`
+  console.log(choice)
+  if (choice === 'Time Chart') {
+    document.getElementById("id_int_value").classList.add('hidden')
+
+  } else if (choice === 'Integer Chart') {
+    document.getElementById("id_time_value").classList.add('hidden')
+
+  }
+</script>
+{% endblock %}
