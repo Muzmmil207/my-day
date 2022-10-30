@@ -22,7 +22,3 @@ class IndexForm(forms.ModelForm):
         #fields = '__all__'
         fields = ('int_value', 'time_value')
 
-        # widgets = {
-        #     'int_value': forms.TextInput(attrs={'class': 'form-control'}),
-        #     'time_value': forms.TextInput(attrs={'class': 'form-control'}),
-        # }

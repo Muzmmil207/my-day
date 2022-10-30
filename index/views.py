@@ -1,11 +1,13 @@
-from django.shortcuts import render,  redirect
-from .models import chart, index
-from django.http import JsonResponse, HttpResponse
-from .forms import ChartForm, IndexForm
-from operator import mul
 import datetime
-from django.contrib.auth.decorators import login_required
+from operator import mul
+
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect, render
+
+from .forms import ChartForm, IndexForm
+from .models import chart, index
 
 # Create your views here.
 
